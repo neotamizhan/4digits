@@ -10,8 +10,35 @@
 
 
   </style>
+
+  <script type="text/javascript">
+    function signinCallback(authResult) {
+      if (authResult['access_token']) {
+        // Successfully authorized
+        // Hide the sign-in button now that the user is authorized, for example:
+        document.getElementById('signinButton').setAttribute('style', 'display: none');
+      } else if (authResult['error']) {
+        // There was an error.
+        // Possible error codes:
+        //   "access_denied" - User denied access to your app
+        //   "immediate_failed" - Could not automatically log in the user
+        // console.log('There was an error: ' + authResult['error']);
+      }
+    }
+  </script>
+
 </head>
 <body ng-app="FourDigits" ng-controller="GameController">
+<span id="signinButton">
+  <span
+    class="g-signin"
+    data-callback="signinCallback"
+    data-clientid="CLIENT_ID"
+    data-cookiepolicy="single_host_origin"
+    data-requestvisibleactions="http://schemas.google.com/AddActivity"
+    data-scope="https://www.googleapis.com/auth/plus.login">>
+  </span>
+</span>
 <center>
 	<div class="page-header">
 		<div class="container">
@@ -190,6 +217,17 @@
 	<script type="text/javascript" src="lib/angular/angular.min.js"></script>
 	<script type="text/javascript" src="js/4digits.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>
+
+
+  <!-- Google+ integration -->
+    <script type="text/javascript">
+      (function() {
+       var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+       po.src = 'https://apis.google.com/js/client:plusone.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+     })();
+    </script>
+
 	<!-- Analytics -->
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -200,6 +238,6 @@
 	  ga('create', 'UA-43617986-1', 'kissr.com');
 	  ga('send', 'pageview');
 
-	</script>
+	</script>  
 </body>
 </html>
