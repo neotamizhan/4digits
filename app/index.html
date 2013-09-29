@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>4 digits - the game</title>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <style type="text/css">
+  	body, .bar-row, input {
+  		margin-top: 20px;
+  	}
+
+
+  </style>
+</head>
+<body ng-app="FourDigits" ng-controller="GameController">
+<center>
+	<div class="page-header">
+		<div class="container">
+			<h1>4digits&nbsp;&nbsp;&nbsp;<small>a game where you guess the number computer thought of.</small></h1>			<br/><br/>
+			<!-- Button trigger modal -->
+			<center>
+	  		<a data-toggle="modal" href="#myModal" class="btn btn-info btn-lg">How to Play?</a>
+	  		<a data-toggle="modal" href="#AboutModal" class="btn btn-success btn-lg">About</a>
+	  		<a data-toggle="modal" href="#SettingsModal" class="btn btn-warning btn-lg">Settings</a>
+	  		<a href="#" class="btn btn-primary btn-lg" ng-click="startGame()">Start Game</a>
+	  		<a href="#" class="btn btn-danger btn-lg" ng-click="endGame()" ng-show="game_on">End Game</a>
+	  		</center>
+		</div>
+	</div>
+	<div class="container">
+    <div class="row">
+      <div class="col-md-4 col-md-offset-3 well" ng-show="game_on">
+        <p>Digits in the Number : <bold>{{digits}}</bold></p><p>Maximum Tries Allowed : <bold>{{max_tries}}</bold></p>
+      </div>    
+    </div>
+		<div class="row bar-row">
+			<div class="col-md-4 col-md-offset-3" ng-show="game_on">
+				<div class="progress progress-striped">
+				  <div class="progress-bar progress-bar-{{GetState()}}" role="progressbar" aria-valuenow="{{CompletedPercentage()}}" aria-valuemin="0" aria-valuemax="100" style="width: {{CompletedPercentage()}}%">					  		   
+				  </div>				  
+				</div>
+				<center><span class="label label-{{GetState()}}">{{counter}}</span>/<span class="label label-success">{{max_tries}}</span></center>
+			</div>		
+		</div>
+
+
+		<div class="row" ng-show="game_on">
+			<div class="col-md-4 col-md-offset-3">
+				<form ng-submit="processGuess()" class="form">
+					<div class="form-group">						
+						<input type="text" id="guessed" name="guessed" placeholder="Guess a number" ng-model="guessed" class="form-control" width="50%" />	
+					</div>
+				</form>
+			</div>
+		</div>
+		
+		<div class="row" ng-show="game.tries.length > 0">
+			<div class="panel panel-{{panel_class}}">
+				<div class="panel-heading">
+					<h4 class="panel-title">{{message}}</h4>
+				</div>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Sr.</th>
+							<th>Guess</th>
+							<th>Result</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="try in game.tries">
+							<td>{{try.serial}}</td>
+							<td>{{try.guess}}</td>
+							<td>{{try.result}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>	
+	</div>
+</center>
+
+	<!--Modal Window-->
+
+<!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">How to Play?</h4>
+        </div>
+        <div class="modal-body">
+					<h3>Object of the game :</h3>
+					<p>Computer thinks of a 4 digit number. Your objective is to guess that number.<p>
+
+					<h3>How to play : </h3>
+					<ul>
+						<li>For each guess you make, you get back a result. e.g 1A3B</li>
+						<li>This result has two parts. A and B. </li>
+						<li>"A" is the number of digits in the guessed number which are in the original number and are in the correct position. </li>
+						<li>"B" is the number of digits in the guessed number which are in the original number but are in wrong position. </li>
+					</ul>
+					 
+					 <p>eg. </p>
+
+					 <p>Original Number = 8569</p>
+					 <p>Guessed Number = 6578</p>
+
+					 <p>Result = 1A2B (5 is in the same position of the original. So, 1A. 6 and 8 are correct but in wrong positions, so, 2B.)</p>
+
+					 <p>You win when the result is 4A0B. </p>
+					 <p>You have 8 chances to do this. </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+
+<!-- Credits -->
+  <div class="modal fade" id="AboutModal" tabindex="-1" role="dialog" aria-labelledby="AboutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">About</h4>
+        </div>
+        <div class="modal-body" align="center">
+        	<div class="row">        		        	
+						<p>Developed by : Siddharth <a href="https://plus.google.com/u/0/112916501870457284778" target="_blank"><img src="img/gplus-32.png" height="32" width="32"></a> <a href="http://twitter.com/neotamizhan" target="_blank"><img src="img/twitter.png" height="32" width="32"></a> <a href="http://angumingum.wordpress.com" target="_blank"><img src="img/wordpress-logo-32-blue.png" height="32" width="32"></a>&nbsp;&nbsp;&nbsp;<a href="mailto:siddhu.v@gmail.com" target="_blank"><span class="icon glyphicon glyphicon-envelope"></span></a></p>
+					</div>
+					<hr/>
+					<div class="row">
+						<p>Inspired by the article on 4digits python game in the 19th issue of kaniyam. <a href="http://www.kaniyam.com/release-19/"> Kaniyam Issue 19</a></p>
+					</div>
+					<hr/>
+					<div class="row">
+						<h4>Built with</h4>
+						<p>
+							<a href="http://angularjs.org/" target="_blank"><img src="img/AngularJS-Shield-small.png" height="80" width="80"></a>
+							<a href="http://getbootstrap.com/" target="_blank"><img src="img/bootstrap.png" height="80" width="80"></a>
+							<a href="http://www.sublimetext.com/" target="_blank"><img src="img/Sublime_Text_Logo.png" height="80" width="80"></a>						
+						</p>
+					</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->  
+
+
+<!-- Settings -->
+  <div class="modal fade" id="SettingsModal" tabindex="-1" role="dialog" aria-labelledby="SettingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Settings</h4>
+        </div>
+        <div class="modal-body">
+        	<div ng-hide="game_on">
+            <form class="form">
+              <div class="form-group well well-sm">            
+                <label for="txtMaxTries">Maximum Tries</label><input type="text" id="txtMaxTries" name="txtMaxTries" placeholder="Max Tries" ng-model="max_tries" class="form-control" width="50%" />  
+              </div>
+            <div class="form-group well well-sm">
+              
+              <label for="txtDigits">Number of Digits</label><input type="text" id="txtDigits" name="txtDigits" placeholder="Digits" ng-model="digits" class="form-control" width="50%" />  
+            </div>            
+
+            </form>          
+        	</div>
+        	<div ng-show="game_on">
+        		<h2>Settings not available when the game is on.</h2>
+        	</div>        	
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>          
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal --> 
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/underscore.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="lib/angular/angular.min.js"></script>
+	<script type="text/javascript" src="js/4digits.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+	<!-- Analytics -->
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','http://www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-43617986-1', 'kissr.com');
+	  ga('send', 'pageview');
+
+	</script>
+</body>
+</html>
