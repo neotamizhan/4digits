@@ -12,8 +12,26 @@
   </style>
 
   <script type="text/javascript">
+  var request = null;
+
+
     function signinCallback(authResult) {
       if (authResult['access_token']) {
+
+		gapi.auth.setToken(authResult); 
+
+		gapi.client.load('plus','v1', function(){
+		 var request = gapi.client.plus.people.get({
+		   'userId': 'me'
+		 });
+		 request.execute(function(resp) {
+		   console.log('Retrieved profile for:' + resp.displayName);
+		   console.log(resp);
+		   var text = "Welcome " + resp.nickname + "<br/>";
+		   text = text + "<img src='" + resp.image.url + "' height=50 width=50/>"
+		   $('#signed_in').html(text);
+		 });
+		});	
         // Successfully authorized
         // Hide the sign-in button now that the user is authorized, for example:
         document.getElementById('signinButton').setAttribute('style', 'display: none');
@@ -33,12 +51,13 @@
   <span
     class="g-signin"
     data-callback="signinCallback"
-    data-clientid="CLIENT_ID"
+    data-clientid="285662775302.apps.googleusercontent.com"
     data-cookiepolicy="single_host_origin"
     data-requestvisibleactions="http://schemas.google.com/AddActivity"
-    data-scope="https://www.googleapis.com/auth/plus.login">>
+    data-scope="https://www.googleapis.com/auth/plus.login">
   </span>
 </span>
+<span id="signed_in"></span>
 <center>
 	<div class="page-header">
 		<div class="container">
